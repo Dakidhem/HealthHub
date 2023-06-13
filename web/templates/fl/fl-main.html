@@ -1,0 +1,8 @@
+{% extends 'gui/base/base.html' %} {% load static tailwind_tags %} {% load i18n%} {% block content %}
+<div class="min-h-screen w-full flex justify-center items-center flex-col">
+    <h1 class="text-third text-2xl font-bold text-center">Federated learning</h1>
+    <button class="bg-primary text-white px-4 py-2 rounded" onclick="startFlServer()">start fl process</button>
+    <div class="shadow-lg min-h-screen w-full border-2 border-solid" id="output"></div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'gui/base/base.html' %}
+{% load static %}
+{% block content %}
+<div>
+    <section>
+        <div class="grid px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
+            <div class="mr-auto place-self-center lg:col-span-7">
+                <h1
+                    class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl text-primary">
+                    Health Hub</h1>
+                <p class="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-gray-500">
+                    Empowering medecine through Federated Learning and Artificial intelligence </p>
+                {% if not user.is_authenticated %}
+                <a href="{% url 'signup' %}"
+                    class="inline-flex items-center justify-center mr-3 px-5 py-3 font-medium text-center border border-primary rounded-lg text-white bg-primary hover:text-primary hover:bg-white focus:ring-gray-800">
+                    Sign Up
+                </a>
+                <a href="{% url 'signin' %}"
+                    class="inline-flex items-center justify-center px-5 py-3 font-medium text-center border border-primary rounded-lg text-primary hover:text-white hover:bg-primary focus:ring-gray-800">
+                    Sign In
+                </a>
+                {% else %}
+                <a href="{% url 'patients:my-patients' %}"
+                    class="inline-flex items-center justify-center mr-3 px-5 py-3 font-medium text-center border border-primary rounded-lg text-white bg-primary hover:text-primary hover:bg-white focus:ring-gray-800">
+                    Patients list
+                </a>
+                <a href="{% url 'fl:fl' %}"
+                    class="inline-flex items-center justify-center px-5 py-3 font-medium text-center border border-primary rounded-lg text-primary hover:text-white hover:bg-primary focus:ring-gray-800">
+                    Federated learning
+                </a>
+                {% endif %}
+            </div>
+            <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
+                <img src="{% static 'images/hero.png' %}" alt="mockup">
+            </div>
+        </div>
+    </section>
+    <hr class="border-primary border-2 rounded">
+    <section class="py-16 px-8">
+        <div class="max-w-screen-xl mt-16">
+            <div class="grid lg:grid-cols-3 w-full items-center mr-0 w-full">
+                <img src="{% static 'images/server.png' %}" alt="server">
+                <div></div>
+                <div
+                    class="block cursor-pointer max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 h-content">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-primary">Secure
+                        Collaborative Learning for Enhanced Healthcare</h5>
+                    <p class="font-normal  text-gray-500">Revolutionize e-Health with federated learning, enabling
+                        secure collaboration while preserving patient privacy.</p>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-screen-xl mt-16">
+            <div class="grid lg:grid-cols-3 w-full items-center">
+                <div
+                    class="block cursor-pointer max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 h-content">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-primary">Patient Management</h5>
+                    <p class="font-normal  text-gray-500">Experience the future of healthcare as doctors, seamlessly
+                        manage patients while harnessing the power of AI predictions through federated learning, all
+                        while ensuring utmost privacy.</p>
+                </div>
+                <div></div>
+                <img src="{% static 'images/doctor.png' %}" alt="server">
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

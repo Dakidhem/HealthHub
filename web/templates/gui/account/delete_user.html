@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container m-auto mt-5 bg-primary-subtle rounded-3 p-3">
+  <h2>Are you sure you want to delete your account?</h2>
+  <p>All your data will be permanently deleted.</p>
+  <form method="POST">
+    {% csrf_token %}
+    <button class="btn btn-danger" type="submit">Delete Account</button>
+  </form>
+</div>
+{% endblock %}
