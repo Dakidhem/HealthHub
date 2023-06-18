@@ -48,12 +48,13 @@ async def predict_api(file: UploadFile = File(...)):
 
 
 
-async def send_output(websocket):
-    
+async def send_output(websocket,num_round,min_client):
     process = await asyncio.create_subprocess_exec(
         "python", "start_flower_server.py",
+        str(num_round),str(min_client),
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
+
     )
 
     while True:
@@ -79,6 +80,10 @@ async def send_output(websocket):
             # Process has finished, break the loop
             break
 
+    # Send a final message indicating that the process has completed
+    completion_message = {"type": "success", "text": "Process completed"}
+    await websocket.send_text(json.dumps(completion_message))
+
     await websocket.close()
 
 
@@ -88,8 +93,27 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     starting_message={"type":"success","text":"Starting the federated process ..."}
     await websocket.send_text(json.dumps(starting_message))
+
+    num_round=None
+    min_client=None
+
+    async def receive_messages():
+        nonlocal num_round, min_client
+
+        while True:
+            text = await websocket.receive_text()
+            if "num_round" in text:
+                num_round = text.replace("num_round : ", "")
+            if "min_client" in text:
+                min_client = text.replace("min_client : ", "")
+
+            if num_round and min_client:
+                break
+
+    await receive_messages()
+                
     # Start a task to send the Flower server output to the WebSocket client
-    await send_output(websocket)
+    await send_output(websocket,num_round,min_client)
 
 origins = ["*"]
 

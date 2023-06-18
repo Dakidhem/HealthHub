@@ -13,7 +13,7 @@ function show_success(text) {
     position: "center",
     stopOnFocus: true,
     style: {
-      background: toaster_success,
+      background: "#026443",
       borderRadius: "5px",
       color: "#fffffe",
       boxShadow: "none",

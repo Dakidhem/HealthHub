@@ -89,6 +89,47 @@ class EditPatient(View):
         except Exception as e:
             print(e)
         return JsonResponse(res, status = res['status'])
+    def delete(self,req,patient_id):
+        res = {"status": 500, "message": "Une erreur est survenue, veuillez réessayer."}
+        try:
+            patient=Patient.objects.filter(id=patient_id).first()
+            if patient :
+                if patient.created_by == req.user :
+                    patient.delete()
+                    res["status"]=200
+                    res["message"]="Patient deleted with success"
+        except Exception as e:
+            print(e)
+        return JsonResponse(res, status = res['status'])
+    
+    def put(self,req,patient_id):
+        res = {"status": 500, "message": "Une erreur est survenue, veuillez réessayer."}
+        try:
+            patient=Patient.objects.filter(id=patient_id).first()
+            if patient :
+                if patient.created_by == req.user :
+                    patient.archived=True
+                    patient.save()
+                    res["status"]=200
+                    res["message"]="Patient archived with success"
+        except Exception as e:
+            print(e)
+        return JsonResponse(res, status = res['status'])
+
+    def patch(self,req,patient_id):
+        res = {"status": 500, "message": "Une erreur est survenue, veuillez réessayer."}
+        try:
+            patient=Patient.objects.filter(id=patient_id).first()
+            if patient :
+                if patient.created_by == req.user :
+                    patient.archived=False
+                    patient.save()
+                    res["status"]=200
+                    res["message"]="Patient unarchived with success"
+        except Exception as e:
+            print(e)
+        return JsonResponse(res, status = res['status'])
+        
 
 
 
@@ -108,7 +149,7 @@ def my_patients(request):
 
 class MyPatient(View):
     def get(self,req):
-        patients = Patient.objects.filter(created_by=req.user)
+        patients = Patient.objects.filter(created_by=req.user,archived=False)
 
         return render(req, 'gui/patients/patients-list.html', {
             'patients': patients,
@@ -176,36 +217,27 @@ class EditXrayImageView(View):
         return JsonResponse(res, status=res["status"])
     
     def delete(self,req,xray_image_id):
+        res = {"status": 500, "message": "Une erreur est survenue, veuillez réessayer."}
+        try:
+            xray_image=XrayImage.objects.filter(id=xray_image_id).first()
+            if xray_image:
+                if xray_image.patient.created_by == req.user:
+                    xray_image.delete()
+                    res["status"]=200
+                    res["message"]="Xray image deleted with success"
+            
+        except Exception as e:
+            print(e)
+        return JsonResponse(res, status=res["status"])
+
+
+
+class ArchiveView(View):
+    def get(self,req):
+        archived_patients=Patient.objects.filter(created_by=req.user,archived=True)
+        return render(req, 'gui/patients/patients-list-archive.html',{"archived_patients":archived_patients})
+    def post(self,req):
         pass
-
-@login_required
-def search_patients(request):
-    search_query = request.GET.get('search_query')
-    patients = Patient.objects.filter(full_name__icontains=search_query, created_by=request.user)
-    context = {
-        'title': 'My patients',
-        'patients': patients
-    }
-    return render(request, 'patients/patients-list.html', context)
-
-
-
-@login_required
-def add_xray_image(request, patient_id):
-    patient=get_object_or_404(Patient, id=patient_id)
-
-    if request.method == 'POST' and request.FILES['upload']:
-        xray_image=XrayImage.objects.create(patient=patient,xray_image=request.FILES['upload'])
-        return redirect('patients:patient-detail', patient_id=patient.id)
-
-    return render(request, 'patients/add-xray-image.html')
-
-
-
-@login_required
-def edit_xray_image(request, xray_image_id):
-    xray_image=get_object_or_404(XrayImage, id=xray_image_id)
-    return render(request, 'patients/edit-xray-image.html',{'xray_image':xray_image})
 
 
 @login_required

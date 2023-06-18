@@ -10,7 +10,7 @@
       Patient information
     </h1>
     <div class="flex w-full">
-      <div class="w-5/12 flex justify-center items-start">
+      <div class="w-5/12 flex justify-between items-center flex-col">
         <div class="w-[300px] h-[300px] rounded-full overflow-hidden relative">
           <img class="" src="/media/{{patient.image}}" alt="Rounded avatar">
           <div
@@ -21,6 +21,20 @@
           <input class="hidden" aria-describedby="file_input_help" id="image" type="file" accept=".png,.jpg,.jpeg"
             name="image" onchange="()=>{patient_data['image']=this.files[0];
       document.getElementById('image')=this.files[0]}">
+        </div>
+        <div class="w-full">
+          {% if patient.archived == False %}
+            <button
+            class="text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center bg-red-600 mb-16" onclick="archivePatient(event,this,'{{patient.id}}')">Archive
+            patient</button>
+          {% else %}
+          <button
+            class="text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center bg-primary mb-16" onclick="unarchivePatient(event,this,'{{patient.id}}')">Unarchive
+            patient</button>
+          <button
+            class="text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center bg-red-600 mb-16" onclick="deletePatient(event,this,'{{patient.id}}')">Delete
+            patient</button>
+          {% endif %}
         </div>
       </div>
       <div class="w-7/12">
@@ -64,15 +78,16 @@
           </select>
         </div>
         <div class="mb-6">
-
+          <!-- prettier-ignore -->
           <div class="flex items-center mb-4">
-            <input id="gender1" type="radio" value="Male" name="gender"
+            <input {% if patient.gender == "Male" %} checked {% endif %} id="gender1" type="radio" value="Male" name="gender"
               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             <label for="gender1" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Male
             </label>
           </div>
+
           <div class="flex items-center">
-            <input checked id="gender2" type="radio" value="Female" name="gender"
+            <input {% if patient.gender == "Female" %} checked {% endif %} id="gender2" type="radio" value="Female" name="gender"
               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             <label for="gender2" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Female
             </label>
@@ -98,10 +113,11 @@
             oninput="patient_data['description']=event.target.value;">{{patient.description}}</textarea>
 
         </div>
-        <div class="flex justify-end">
+        <div class="flex justify-end w-full">
           <button type="submit"
-            class="bg-red-600 text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ms-auto">Modify
+            class="text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" style="background-color: #025464;">Modify
             patient</button>
+
         </div>
       </div>
     </div>

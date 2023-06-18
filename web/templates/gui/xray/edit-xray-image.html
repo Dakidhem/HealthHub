@@ -37,6 +37,9 @@
             onchange="changeImage(this)"
           />
         </div>
+        <button
+            class="mt-8 text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center bg-red-600 mb-16" onclick="deleteXrayImage(event,this,'{{xray_image.id}}')">Delete
+            xray image</button>
       </div>
       <div class="flex flex-col">
         <h2 class="mb-5 text-third font-bold text-xl">
@@ -103,18 +106,12 @@
   }
   function makeDiagnostic(event, elem) {
     event.preventDefault();
-    const formdata = new FormData();
-    let body = {};
+    const body = new FormData();
     if (xray_data["image"]) {
-      console.log(xray_data["image"])
-      formdata.append("image", xray_data["image"]);
-      body = formdata;
+      body.append("image", xray_data["image"]);
     } else {
-      body = JSON.stringify({
-        image_url: "{{ xray_image.xray_image.url }}",
-      });
+      body.append("image_url","{{ xray_image.xray_image.url }}");
     }
-
     const options = {
       method: "POST",
       body: body,

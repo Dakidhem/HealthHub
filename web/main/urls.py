@@ -12,5 +12,8 @@ urlpatterns = [
     path('edit-profile/', edit_user, name='edit_profile'),
     path('change-password/', change_password, name='change-password'),
     path('user-profile/<int:pk>/delete-account/', DeleteUserView.as_view(),name='delete-account'),
-    path('contact-us/',ContactView.as_view(),name="contact-us")
+    path('contact-us/',ContactView.as_view(),name="contact-us"),
+    path('privacy/',TemplateView.as_view(template_name="gui/others/privacy.html"),name="privacy"),
+    path('terms/',TemplateView.as_view(template_name="gui/others/terms.html"),name="terms"),
+    path('about/',TemplateView.as_view(template_name="gui/others/about.html"),name="about"),
 ]

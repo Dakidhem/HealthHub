@@ -1,0 +1,86 @@
+{% extends 'gui/base/base.html' %} {% load i18n %} {% load static
+tailwind_tags%}{% load static %} {% block content %}
+<div class="container mx-auto py-8">
+  <h1 class="text-3xl text-third text-center font-bold mb-4">About Us</h1>
+
+  <div class="bg-white rounded-lg shadow p-6">
+    <p class="mb-4">
+      We are students in our final year at the Higher School of Computer Science
+      in Sidi Bel Abbes, Algeria. Our final study project focuses on developing
+      a specialized website for federated learning in medical health and X-ray
+      images.
+    </p>
+
+    <p class="mb-4">
+      Our goal is to leverage the power of federated learning to enable
+      hospitals and doctors to collaborate in diagnosing medical conditions
+      using a global model while ensuring patient data privacy and security.
+    </p>
+
+    <p class="mb-4">Our team consists of:</p>
+    <ul class="list-disc pl-6 mb-4">
+      <li>Mehdi Kadiri</li>
+      <li>Hamza Kaddouri</li>
+    </ul>
+
+    <p class="mb-4">Specifications of our website:</p>
+    <ul class="list-disc pl-6 mb-4">
+      <li>
+        Specialization: Federated learning in medical health and X-ray images.
+      </li>
+      <li>
+        Target Users: Hospitals and doctors who wish to collaborate and improve
+        diagnostic accuracy.
+      </li>
+      <li>
+        Data Management: Each hospital/doctor can manage their patient data
+        securely on the platform.
+      </li>
+      <li>
+        Global Model: The website utilizes federated learning techniques to
+        aggregate local models and create a shared global model.
+      </li>
+      <li>
+        Privacy Preservation: Patient data privacy is maintained through
+        encryption, anonymization, and secure data handling.
+      </li>
+      <li>
+        Diagnostic Capabilities: Hospitals and doctors can use the global model
+        for diagnostic purposes, benefiting from collective knowledge.
+      </li>
+    </ul>
+
+    <p class="mb-4">How it works:</p>
+    <ol class="list-decimal pl-6 mb-4">
+      <li>
+        Hospitals and doctors create accounts and securely upload patient data,
+        including X-ray images and related information.
+      </li>
+      <li>
+        The website uses federated learning techniques to train a global model
+        without directly accessing or sharing individual patient data.
+      </li>
+      <li>
+        The global model is periodically updated by aggregating the knowledge
+        learned from different hospitals and doctors.
+      </li>
+      <li>
+        Using the global model, hospitals and doctors can make diagnostic
+        predictions based on the collective knowledge of the participating
+        institutions.
+      </li>
+      <li>
+        Data privacy is maintained throughout the process, ensuring patient
+        confidentiality and complying with privacy regulations.
+      </li>
+    </ol>
+
+    <p class="mb-4">
+      Located in Sidi Bel Abbes, Algeria, we are excited to bring our knowledge
+      and skills to create a valuable tool for the medical community. We strive
+      to make a positive impact and contribute to the field of healthcare
+      through our final study project.
+    </p>
+  </div>
+</div>
+{% endblock %}

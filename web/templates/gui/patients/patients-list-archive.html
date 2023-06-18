@@ -1,25 +1,10 @@
 {% extends 'gui/base/base.html' %} {% load static %} {% block content %}
 
 <div class="relative max-w-[1440px] w-full lg:min-h-screen-admin">
-  <h1 class="text-3xl text-third font-bold text-center">My patient</h1>
+  <h1 class="text-3xl text-third font-bold text-center">Archived patient</h1>
   <div
-    class="flex items-center justify-between pb-4 bg-white dark:bg-gray-900 mt-8"
+    class="flex items-center justify-end pb-4 bg-white dark:bg-gray-900 mt-8"
   >
-    <div class="flex items-center justify-center">
-      <a
-        href="{% url 'patients:add-patient' %}"
-        class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-      >
-        <i class="fa-solid fa-plus text-gray-500 mr-1"></i>
-        <span>Add patient</span>
-      </a>
-      <a
-        href="{% url 'patients:archive' %}"
-        class="inline-flex ml-4 items-center text-white bg-primary border border-gray-300 focus:outline-none hover:bg-forth focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5"
-      >
-        Archived patients
-      </a>
-    </div>
     <div class="relative">
       <div
         class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
@@ -47,7 +32,7 @@
       />
     </div>
   </div>
-  {% if patients %}
+  {% if archived_patients %}
   <table
     class="w-full text-sm text-left text-gray-500 dark:text-gray-400 overflow-x-auto shadow-md sm:rounded-lg"
   >
@@ -72,7 +57,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for patient in patients %}
+      {% for patient in archived_patients %}
       <tr
         class="patient-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
       >
@@ -126,7 +111,7 @@
     class="flex items-center jusfity-center bg-gray-100 text-center py-4 px-4 rounded-lg"
   >
     <p class="w-full text-center font-semibold text-third">
-      You have no patients
+      You have no archived patients
     </p>
   </div>
   {% endif %}
@@ -170,5 +155,4 @@
     border-spacing: 0 10px;
   }
 </style>
-
 {% endblock %}

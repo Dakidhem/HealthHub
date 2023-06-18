@@ -1,0 +1,168 @@
+{% extends 'gui/base/base.html' %} {% load static tailwind_tags %} {% load
+i18n%} {% block content %}
+<div class="relative max-w-[1440px] w-full lg:min-h-screen-admin">
+  <h1 class="text-3xl text-third font-bold text-center">
+    Federated learning result : {{result.date}}
+  </h1>
+
+  {% if rounds %}
+  <table
+    class="w-full text-sm text-left text-gray-500 overflow-x-auto shadow-md sm:rounded-lg mt-16"
+  >
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+      <tr>
+        <th scope="col" class="px-6 py-3">Round</th>
+        <th scope="col" class="px-6 py-3">Duration</th>
+        <th scope="col" class="px-6 py-3">Losses</th>
+        <th scope="col" class="px-6 py-3">Training accuracy</th>
+        <th scope="col" class="px-6 py-3">Evaluation accuracy</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for round in rounds %}
+      <tr
+        class="patient-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+      >
+        <td
+          scope="row"
+          class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
+        >
+          <div class="text-base font-semibold" id="full_name">
+            {{round.round}}
+          </div>
+        </td>
+        <td class="px-6 py-4">{{round.duration}} seconds</td>
+        <td class="px-6 py-4">{{round.losses_distributed}}</td>
+        <td class="px-6 py-4">{{round.metrics_distributed_fit}}</td>
+        <td class="px-6 py-4">{{round.metrics_distributed}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div
+    class="flex items-center jusfity-center bg-gray-100 text-center py-4 px-4 rounded-lg"
+  >
+    <p class="w-full text-center font-semibold text-third">
+      There is no results to be shown
+    </p>
+  </div>
+  {% endif %}
+  <h2 class="text-3xl text-third font-bold mt-16">Charts</h2>
+  {% if rounds %}
+  <!-- Graph for Losses -->
+  <div class="max-w-[50%] mx-auto">
+    <!-- Graph for Training Accuracy -->
+    <div class="mt-16">
+      <h2 class="text-2xl text-third font-semibold mb-4">Training Accuracy</h2>
+      <canvas id="trainingAccuracyChart"></canvas>
+    </div>
+
+    <!-- Graph for Evaluation Accuracy -->
+    <div class="mt-16">
+      <h2 class="text-2xl text-third font-semibold mb-4">
+        Evaluation Accuracy
+      </h2>
+      <canvas id="evaluationAccuracyChart"></canvas>
+    </div>
+    <div class="mt-16">
+      <h2 class="text-2xl text-third font-semibold mb-4">Losses</h2>
+      <canvas id="lossesChart"></canvas>
+    </div>
+    {% else %}
+    <div
+      class="flex items-center justify-center bg-gray-100 text-center py-4 px-4 rounded-lg"
+    >
+      <p class="w-full text-center font-semibold text-third">
+        There are no results to be shown
+      </p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+<!-- Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Custom JavaScript code -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get the data from the server
+    var rounds = {{ rounds|safe }};  // Ensure the data is safe for rendering
+
+    // Extract the metrics for each round
+    var losses = rounds.map(function(round) {
+      return round.losses_distributed;
+    });
+
+    var trainingAccuracy = rounds.map(function(round) {
+      return round.metrics_distributed_fit;
+    });
+
+    var evaluationAccuracy = rounds.map(function(round) {
+      return round.metrics_distributed;
+    });
+
+    // Chart.js configuration
+    var ctxLosses = document.getElementById('lossesChart').getContext('2d');
+    var lossesChart = new Chart(ctxLosses, {
+      type: 'line',
+      data: {
+        labels: rounds.map(function(round) {
+          return round.round;
+        }),
+        datasets: [{
+          label: 'Losses',
+          data: losses,
+          borderColor: 'rgba(255, 99, 132, 1)',
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+
+          fill: true
+        }]
+      },
+      options: {
+        // Configure the chart options as desired
+      }
+    });
+
+    var ctxTrainingAccuracy = document.getElementById('trainingAccuracyChart').getContext('2d');
+    var trainingAccuracyChart = new Chart(ctxTrainingAccuracy, {
+      type: 'line',
+      data: {
+        labels: rounds.map(function(round) {
+          return round.round;
+        }),
+        datasets: [{
+          label: 'Training Accuracy',
+          data: trainingAccuracy,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          fill: true
+        }]
+      },
+      options: {
+        // Configure the chart options as desired
+      }
+    });
+
+    var ctxEvaluationAccuracy = document.getElementById('evaluationAccuracyChart').getContext('2d');
+    var evaluationAccuracyChart = new Chart(ctxEvaluationAccuracy, {
+      type: 'line',
+      data: {
+        labels: rounds.map(function(round) {
+          return round.round;
+        }),
+        datasets: [{
+          label: 'Evaluation Accuracy',
+          data: evaluationAccuracy,
+          borderColor: 'rgba(54, 162, 235, 1)',
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          fill: true
+        }]
+      },
+      options: {
+        // Configure the chart options as desired
+      }
+    });
+  });
+</script>
+{% endblock %}
