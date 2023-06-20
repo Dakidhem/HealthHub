@@ -25,11 +25,19 @@
         data-dropdown-toggle="user-dropdown"
         data-dropdown-placement="bottom"
       >
+        {% if user.user_type == "Doctor" %}
         <img
           class="w-10 h-10 rounded-full"
-          src="{% static 'images/hospital-icone.png' %}"
+          src="{% static 'images/doctor_illustration.png' %}"
           alt="user photo"
         />
+        {% else %}
+        <img
+          class="w-10 h-10 rounded-full"
+          src="{% static 'images/hospital_illustration.png' %}"
+          alt="user photo"
+        />
+        {% endif %}
       </button>
       <!-- Dropdown menu -->
       <div
@@ -50,6 +58,15 @@
               >Profile</a
             >
           </li>
+          {% if user.user_type == "Hospital" %}
+          <li>
+            <a
+              href="{% url 'hospital:list-doctors' %}"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:bg-gray-600 text-gray-200 hover:text-white"
+              >Doctors list</a
+            >
+          </li>
+          {% else %}
           <li>
             <a
               href="{% url 'patients:my-patients' %}"
@@ -57,6 +74,8 @@
               >Patients list</a
             >
           </li>
+          {% endif %}
+
           <li>
             <a
               href="{% url 'signout' %}"
@@ -90,10 +109,12 @@
       </button>
     </div>
     {% else %}
-    <!-- <a href="{% url 'signin' %}"
-      class="inline-flex items-center justify-center px-5 py-3 font-medium text-center border border-white rounded-lg text-orange bg-white hover:text-white hover:bg-orange focus:ring-gray-800">
+    <a
+      href="{% url 'signin' %}"
+      class="inline-flex items-center justify-center px-5 py-3 font-medium text-center border border-white rounded-lg text-primary bg-white hover:text-white hover:bg-primary focus:ring-gray-800 md:order-2"
+    >
       Sign In
-    </a> -->
+    </a>
     {% endif %}
     <div
       class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
@@ -108,6 +129,13 @@
             class="block py-2 pl-3 pr-4 text-white rounded text-white hover:text-gray-400"
             aria-current="page"
             >Home</a
+          >
+        </li>
+        <li>
+          <a
+            href="{% url 'patients:patient-login' %}"
+            class="block py-2 pl-3 text-white hover:text-gray-400"
+            >Check patient result</a
           >
         </li>
         <li>

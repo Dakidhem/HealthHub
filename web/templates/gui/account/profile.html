@@ -1,48 +1,73 @@
-{% extends 'gui/base/base.html' %} {% load static tailwind_tags %} {% load i18n%} {% block content %}
+{% extends 'gui/base/base.html' %} {% load static tailwind_tags %} {% load
+i18n%} {% block content %}
 <div class="w-full min-h-screen mt-16">
-  <div class="w-full max-w-1000 flex flex-col lg:flex-row mx-auto h-content py-2 px-2">
+  <div
+    class="w-full max-w-1000 flex flex-col lg:flex-row mx-auto h-content py-2 px-2"
+  >
     <div class="w-full lg:w-4/12">
-      <h2 class="text-2xl font-bold text-light-purple">Profile</h2>
-      <img src="{% static 'images/hospital-icone.png' %}" alt="profile_picture" width="200" height="200"
-        class="mt-8 mx-auto lg:mx-0" />
+      <h2 class="text-2xl font-bold text-third">Profile</h2>
+      {% if user.user_type == "Doctor" %}
+      <img
+        src="{% static 'images/doctor_illustration.png' %}"
+        alt="profile_picture"
+        width="200"
+        height="200"
+        class="mt-8 mx-auto lg:mx-0"
+      />
+      {% else %}
+      <img
+        src="{% static 'images/hospital_illustration.png' %}"
+        alt="profile_picture"
+        width="200"
+        height="200"
+        class="mt-8 mx-auto lg:mx-0"
+      />
+      {% endif %}
     </div>
     <div class="w-full lg:w-8/12 mt-8 lg:mt-0">
-      <h1 class="text-2xl font-bold text-light-purple">Account information</h1>
+      <h1 class="text-2xl font-bold text-third">Account information</h1>
+      <!-- prettier-ignore -->
       <div class="rounded-lg grid grid-cols-1 gap-y-2 overflow-hidden mt-8">
+        
         <div class="grid grid-cols-2 bg-slate-100 py-2 px-4 w-full">
-          <label class="font-bold">
-            Establishment name
-          </label>
+          {% if user.user_type == "Doctor" %} 
+            <label class="font-bold text-third"> Doctor full name </label>
+          {% else %}
+            <label class="font-bold text-third"> Hospital name </label>
+          {% endif %}
+          
           <span class="text-slate-600">
-            {% if user.username %}
-            {{user.username}}
+            {% if user.username %} {{user.username}} 
             {% else %}
-            -------------
+             ------------- 
             {% endif %}
           </span>
         </div>
         <div class="grid grid-cols-2 bg-slate-100 py-2 px-4 w-full">
-          <label class="font-bold">
-            Email address
-          </label>
+          <label class="font-bold text-third"> Email address </label>
           <span class="text-slate-600">
-            {% if user.email %}
-            {{user.email}}
-            {% else %}
-            -------------
+            {% if user.email %} {{user.email}} 
+            {% else %} 
+            ------------- 
             {% endif %}
           </span>
         </div>
         <div class="flex justify-end">
-          <a href="{% url 'change-password' %}"
-            class="bg-orange text-white px-4 py-1 rounded font-medium hover:bg-button-dark">Change password
+          <a
+            href="{% url 'change-password' %}"
+            class="bg-orange text-white px-4 py-1 rounded font-medium hover:bg-button-dark"
+            >Change password
           </a>
         </div>
       </div>
 
       <div class="flex justify-end mt-8">
-        <a href="{% url 'signout' %}" class="bg-red-600 text-white px-4 py-1 rounded font-medium hover:bg-red-800">
-          Sign Out</a>
+        <a
+          href="{% url 'signout' %}"
+          class="bg-red-600 text-white px-4 py-1 rounded font-medium hover:bg-red-800"
+        >
+          Sign Out</a
+        >
       </div>
     </div>
   </div>

@@ -3,7 +3,13 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class User(AbstractUser):
-    pass
+    USER_TYPES = (
+        ('Hospital', 'Hospital',),
+        ('Doctor', 'Doctor')
+        )
+    user_type = models.CharField(max_length = 10, choices = USER_TYPES, default = USER_TYPES[0][0])
+    hospital=models.ForeignKey('self', blank=True, null=True,on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="doctors", blank=True, null=True)
 
 class ContactMessage(models.Model):
     email = models.CharField(max_length = 100,blank=True, null = True)

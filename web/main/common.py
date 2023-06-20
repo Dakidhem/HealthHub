@@ -27,3 +27,4 @@ def create_user(req, res, email,username, password1, password2):
             res["message"] = "The passwords provided are not the same"
     else:
         res["message"] = "The establishment name is already taken"
+

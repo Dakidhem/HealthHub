@@ -4,10 +4,13 @@ i18n%} {% block content %}
   <h1 class="text-3xl text-third font-bold text-center">
     Federated learning result : {{result.date}}
   </h1>
-
+  <p class="mt-16 text-third text-center">
+    Here is a table that summarize the results from the federated learning
+    process
+  </p>
   {% if rounds %}
   <table
-    class="w-full text-sm text-left text-gray-500 overflow-x-auto shadow-md sm:rounded-lg mt-16"
+    class="w-full text-sm text-left text-gray-500 overflow-x-auto shadow-md sm:rounded-lg mt-8"
   >
     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
       <tr>
@@ -54,7 +57,12 @@ i18n%} {% block content %}
   <div class="max-w-[50%] mx-auto">
     <!-- Graph for Training Accuracy -->
     <div class="mt-16">
-      <h2 class="text-2xl text-third font-semibold mb-4">Training Accuracy</h2>
+      <h2 class="text-2xl text-third font-semibold mb-4">Test Accuracy</h2>
+      <p class="mb-8 text-third">
+        Training accuracy measures how well a machine learning model predicts
+        the labels of the training data. It shows the model's ability to
+        correctly classify examples it has already seen.
+      </p>
       <canvas id="trainingAccuracyChart"></canvas>
     </div>
 
@@ -63,10 +71,27 @@ i18n%} {% block content %}
       <h2 class="text-2xl text-third font-semibold mb-4">
         Evaluation Accuracy
       </h2>
+      <p class="mb-8 text-third">
+        Test accuracy refers to the performance of a machine learning model on a
+        separate dataset, called the test set, that is not used during the
+        model's training phase. It measures the accuracy or correctness of the
+        model's predictions on unseen data. Test accuracy provides an estimate
+        of how well the model generalizes to new, unseen examples and is an
+        important metric for evaluating the overall performance and
+        effectiveness of the trained model.
+      </p>
       <canvas id="evaluationAccuracyChart"></canvas>
     </div>
     <div class="mt-16">
       <h2 class="text-2xl text-third font-semibold mb-4">Losses</h2>
+      <p class="mb-8 text-third">
+        Loss refers to a numerical value that represents the error or
+        discrepancy between the predicted output of a machine learning model and
+        the actual ground truth. It quantifies how well the model is performing
+        during the training process, with the goal of minimizing the loss over
+        time. In simpler terms, loss indicates how far off the model's
+        predictions are from the desired outcomes.
+      </p>
       <canvas id="lossesChart"></canvas>
     </div>
     {% else %}
@@ -152,7 +177,7 @@ i18n%} {% block content %}
           return round.round;
         }),
         datasets: [{
-          label: 'Evaluation Accuracy',
+          label: 'Test Accuracy',
           data: evaluationAccuracy,
           borderColor: 'rgba(54, 162, 235, 1)',
           backgroundColor: 'rgba(54, 162, 235, 0.2)',

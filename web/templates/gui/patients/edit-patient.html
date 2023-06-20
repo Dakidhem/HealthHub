@@ -6,21 +6,20 @@
 
 <div class="max-w-[1200px] w-full py-8 mx-auto">
   <form class="w-full" onsubmit="modifyPatient(event,'{{patient.id}}')">
-    <h1 class="text-3xl font-bold text-light-purple mb-8">
+    <h1 class="text-3xl font-bold text-third mb-8">
       Patient information
     </h1>
     <div class="flex w-full">
       <div class="w-5/12 flex justify-between items-center flex-col">
         <div class="w-[300px] h-[300px] rounded-full overflow-hidden relative">
-          <img class="" src="/media/{{patient.image}}" alt="Rounded avatar">
+          <img id="patient_image" src="/media/{{patient.image}}" alt="Rounded avatar">
           <div
             class="bg-dark opacity-0 cursor-pointer absolute z-20 w-full h-full top-0 left-0 hover:opacity-50 flex items-center jusfity-center"
             onclick="document.getElementById('image').click()">
             <i class="fas fa-edit fa-2xl relative left-[45%]" style="color: #AEB8FE;"></i>
           </div>
           <input class="hidden" aria-describedby="file_input_help" id="image" type="file" accept=".png,.jpg,.jpeg"
-            name="image" onchange="()=>{patient_data['image']=this.files[0];
-      document.getElementById('image')=this.files[0]}">
+            name="image" onchange="changeImage(this)">
         </div>
         <div class="w-full">
           {% if patient.archived == False %}
@@ -113,6 +112,24 @@
             oninput="patient_data['description']=event.target.value;">{{patient.description}}</textarea>
 
         </div>
+        <div class="mb-6">
+
+          <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+          <input type="text" id="adress" name="username"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="John123" value="{{patient.username}}"
+            onchange="patient_data['username']=event.target.value;">
+
+        </div>
+        <div class="mb-6">
+
+          <label for="secret_key" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Secret key</label>
+          <input type="text" id="secret_key" name="secret_key"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="johnjohn" value="{{patient.secret_key}}"
+            onchange="patient_data['secret_key']=event.target.value;">
+
+        </div>
         <div class="flex justify-end w-full">
           <button type="submit"
             class="text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" style="background-color: #025464;">Modify
@@ -123,7 +140,7 @@
     </div>
   </form>
   <div class="w-full">
-    <h1 class="text-3xl font-bold text-light-purple mb-8">
+    <h1 class="text-3xl font-bold text-third mb-8">
       Patient xray images
     </h1>
   </div>
@@ -203,5 +220,19 @@
     </a>
   </div>
 </div>
+<script>
+  function changeImage(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      patient_data["image"] = input.files[0];
+      reader.onload = function (e) {
+        document
+          .getElementById("patient_image")
+          .setAttribute("src", e.target.result);
+      };
 
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+</script>
 {% endblock %}

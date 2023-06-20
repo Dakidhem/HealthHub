@@ -1,0 +1,173 @@
+{% extends 'gui/base/base.html' %}
+{% load static %}
+{% load transform_date %}
+
+{% block content %}
+
+<div class="max-w-[1200px] w-full py-8 mx-auto">
+    {% if patient %}
+  <div class="w-full">
+    <h1 class="text-3xl font-bold text-third mb-8">
+      Patient information
+    </h1>
+    
+    <div class="flex w-full">
+      <div class="w-5/12 flex justify-between items-center flex-col">
+        <div class="w-[300px] h-[300px] rounded-full overflow-hidden relative">
+          <img class="" src="/media/{{patient.image}}" alt="Rounded avatar">
+        </div>
+      </div>
+      <div class="w-7/12">
+        <div class="mb-6">
+          <label for="full_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Full name</label>
+          <input type="text" id="full_name" name="full_name"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="John jones" value="{{patient.full_name}}"
+           readonly>
+        </div>
+        <div class="mb-6">
+          <label for="birth_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Birth
+            Date</label>
+          <input type="date" id="birth_date" name="birth_date"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            value="{{patient.birth_date|transform_date}}" readonly>
+        </div>
+        <div class="mb-6">
+          <label for="phone_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone
+            number</label>
+          <input type="number" id="phone_number" name="phone_number"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="0598462531" value="{{patient.phone_number}}"
+            readonly>
+        </div>
+        <div class="mb-6">
+          <label for="blood_type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a blood
+            type</label>
+          <!-- prettier-ignore -->
+          <select id="blood_type" name="blood_type" onchange="patient_data['blood_type']=this.value;"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+
+            <option value="A+" {% if patient.blood_type == "A+" %} selected {% endif %}>A+</option>
+            <option value="A-" {% if patient.blood_type == "A-" %} selected {% endif %}>A-</option>
+            <option value="B+" {% if patient.blood_type == "B+" %} selected {% endif %}>B+</option>
+            <option value="B-" {% if patient.blood_type == "B-" %} selected {% endif %}>B-</option>
+            <option value="AB+" {% if patient.blood_type == "AB+" %} selected {% endif %}>AB+</option>
+            <option value="AB-" {% if patient.blood_type == "AB-" %} selected {% endif %}>AB-</option>
+            <option value="O+" {% if patient.blood_type == "O+" %} selected {% endif %}>O+</option>
+            <option value="O-" {% if patient.blood_type == "O-" %} selected {% endif %}>O-</option>
+          </select>
+        </div>
+        <div class="mb-6">
+          <!-- prettier-ignore -->
+          <div class="flex items-center mb-4">
+            <input {% if patient.gender == "Male" %} checked {% endif %} id="gender1" type="radio" value="Male" name="gender"
+              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <label for="gender1" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Male
+            </label>
+          </div>
+
+          <div class="flex items-center">
+            <input {% if patient.gender == "Female" %} checked {% endif %} id="gender2" type="radio" value="Female" name="gender"
+              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <label for="gender2" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Female
+            </label>
+          </div>
+
+        </div>
+        <div class="mb-6">
+
+          <label for="adress" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
+          <input type="text" id="adress" name="adress"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Sidi djillali, sidi bel abbes" value="{{patient.adress}}"
+            readonly>
+
+        </div>
+        <div class="mb-6">
+
+          <label for="description"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+          <textarea id="description" rows="4" name="description"
+            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Description..."
+            readonly>{{patient.description}}</textarea>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="w-full">
+    <h1 class="text-3xl font-bold text-third mb-8">
+      Results
+    </h1>
+  </div>
+  {% if patient.xray_images %}
+  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 overflow-x-auto shadow-md sm:rounded-lg">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" class="p-4">
+          <div class="flex items-center">
+            <input id="checkbox-all-search" type="checkbox"
+              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <label for="checkbox-all-search" class="sr-only">checkbox</label>
+          </div>
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Name
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Diagnostic
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Creation date
+        </th>
+
+      </tr>
+    </thead>
+    <tbody>
+
+      {% for xray_image in xray_images %}
+      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+        <td class="w-4 p-4">
+          <div class="flex items-center">
+            <input id="checkbox-table-search-1" type="checkbox"
+              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+          </div>
+        </td>
+        <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+          <img class="w-10 h-10 rounded-full" src="/media/{{xray_image.xray_image}}" alt="Patient image">
+          <div class="pl-3">
+            <div class="text-base font-semibold">{{patient.full_name}}</div>
+            <div class="font-normal text-gray-500">{{patient.phone_number}}</div>
+          </div>
+        </th>
+        <td class="px-6 py-4 text-light-purple font-bold">
+          {% if xray_image.diagnostic %}
+          {{xray_image.diagnostic}}
+          {% else %}
+          No diagnostic
+          {% endif %}
+        </td>
+        <td class="px-6 py-4">
+          <div class="flex items-center">
+            {{xray_image.created_at}}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="flex items-center jusfity-center bg-gray-100 text-center py-4 px-4 rounded-lg">
+    <p class="w-full text-center text-gray-400">You have no xray images.</p>
+  </div>
+  {% endif %}
+  {% else %}
+  <h1 class="text-3xl font-bold text-third mb-8 text-center">
+    This patient doesnt exist
+  </h1>
+  {% endif%}
+</div>
+
+{% endblock %}

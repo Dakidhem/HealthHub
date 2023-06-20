@@ -38,6 +38,8 @@ class Patient(models.Model):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
     blood_type = models.CharField(max_length=3, choices=BLOOD_TYPE_CHOICES, null=True, blank=True)
     adress = models.CharField(max_length=200, null=True, blank=True)
+    username=models.CharField(max_length=50,null=True,blank=True)
+    secret_key=models.CharField(max_length=50,null=True,blank=True)
     archived=models.BooleanField(default=False)
 
     def age(self):

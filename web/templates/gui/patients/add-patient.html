@@ -1,7 +1,7 @@
 {% extends 'gui/base/base.html' %} {% load static %} {% block content %}
 
 <form class="max-w-[1000px] w-full py-8" onsubmit="addPatient(this,event)">
-  <h1 class="text-3xl font-bold text-light-purple text-center mb-8">
+  <h1 class="text-3xl font-bold text-third text-center mb-8">
     Patient information
   </h1>
   <div class="mb-6">
@@ -133,6 +133,36 @@
   </div>
   <div class="mb-6">
     <label
+      for="username"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >Username</label
+    >
+    <input
+      type="text"
+      id="username"
+      name="username"
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="John123"
+      required
+    />
+  </div>
+  <div class="mb-6">
+    <label
+      for="secret_key"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >Secret key</label
+    >
+    <input
+      type="text"
+      id="secret_key"
+      name="secret_key"
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="john john"
+      required
+    />
+  </div>
+  <div class="mb-6">
+    <label
       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
       for="image"
       >Upload file</label
@@ -153,13 +183,15 @@
       PNG, JPG, JPEG.
     </p>
   </div>
-
-  <button
-    type="submit"
-    class="bg-red-600 text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ms-auto"
-  >
-    Add patient
-  </button>
+  <div class="w-full flex items-center justify-end">
+    <button
+      type="submit"
+      class="bg-primary text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+      style="background-color: #025464"
+    >
+      Add patient
+    </button>
+  </div>
 </form>
 
 {% endblock %}

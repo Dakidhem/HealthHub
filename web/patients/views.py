@@ -11,6 +11,8 @@ from django.http import  JsonResponse
 import json, requests
 from django.conf import settings
 from io import BytesIO
+from django.core import serializers
+
 # Create your views here.
 
 
@@ -42,11 +44,18 @@ class AddPatient(View):
             gender=req.POST.get("gender")
             adress=req.POST.get("adress")
             description=req.POST.get("description")
+            username=req.POST.get("username")
+            secret_key=req.POST.get("secret_key")
             image=req.FILES['image']
-            if full_name and birth_date and phone_number and blood_type and gender and adress and description and image:
-                Patient.objects.create(full_name=full_name,birth_date=birth_date,created_by=req.user,phone_number=phone_number,blood_type=blood_type,gender=gender,adress=adress,description=description,image=image)
-                res["status"]=200
-                res["message"]="Patient created with success"
+            if full_name and birth_date and phone_number and blood_type and gender and adress and description and image and username and secret_key:
+                verify_patient=Patient.objects.filter(username=username)
+                if verify_patient:
+                    res["status"]=400
+                    res["message"]="Patient username exist already please change it !"
+                else:
+                    Patient.objects.create(full_name=full_name,birth_date=birth_date,created_by=req.user,phone_number=phone_number,blood_type=blood_type,gender=gender,adress=adress,description=description,username=username,secret_key=secret_key,image=image)
+                    res["status"]=200
+                    res["message"]="Patient created with success"
             else :
                 res["status"]=400
                 res["message"]="Please retry and verify if there is a missing field or incorrect data"
@@ -78,6 +87,7 @@ class EditPatient(View):
                     for attr, value in data.items(): 
                             setattr(patient, attr, value)
                     if files:
+                         print(files["image"])
                          patient.image=files["image"]
                     patient.save() 
                     res['status'] = 200
@@ -274,3 +284,39 @@ class MakePrediction(View):
         except Exception as e:
             print(e)
         return JsonResponse(res, status=res["status"])
+
+class PatientLoginView(View):
+    def get(self,req):
+        return render(req,"gui/patients/patient-login.html")
+    # img = Image.open("img_dir")
+    def post(self,req):
+        
+        res = {"status": 500, "message": "Une erreur est survenue, veuillez réessayer."}
+        try:
+            data=req.POST
+            username=data.get("username")
+            secret_key=data.get("secret_key")
+            patient=Patient.objects.filter(username=username,secret_key=secret_key,archived=False).first()
+            if patient:
+                res["status"]=200
+                res["message"]="You can check your results now !"
+                res["data"]=data
+                print(res["data"])
+
+            else :
+                res = {"status": 400, "message": "Please verify your information and retry !"}
+        
+            
+        except Exception as e:
+            print(e)
+        return JsonResponse(res, status=res["status"],safe=False)
+    
+class PatientResultView(View):
+    def get(self,req):
+        data=req.GET
+        username=data.get("username")
+        secret_key=data.get("secret_key")
+        patient=Patient.objects.filter(username=username,secret_key=secret_key).first()
+        xray_images=XrayImage.objects.filter(patient=patient)
+        context={"patient":patient,"xray_images":xray_images}
+        return render(req,"gui/patients/patient-result.html",context)

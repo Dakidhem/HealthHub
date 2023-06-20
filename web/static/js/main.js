@@ -80,6 +80,7 @@ function addPatient(elem, event) {
         body.append("image", input.files[0]);
       } else {
         body.append(input.name, input.value);
+        console.log(input.name, input.value);
       }
     }
   );
@@ -432,4 +433,68 @@ function deleteXrayImage(event, elem, xray_image_id) {
         show_alert(res["message"]);
       }
     });
+}
+
+function patientLogin(event, elem) {
+  event.preventDefault();
+  const body = new FormData();
+  let username = elem.querySelector("[id=username]").value.trim();
+  let secret_key = elem.querySelector("[id=secret_key]").value.trim();
+  console.log(username, secret_key);
+  body.append("username", username);
+  body.append("secret_key", secret_key);
+
+  fetch(`/patients/patient-login/`, {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": document
+        .querySelector("input[name=csrfmiddlewaretoken]")
+        .value.trim(),
+    },
+    body: body,
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.status == 200) {
+        show_success(res["message"]);
+
+        setTimeout(() => {
+          window.location.href = `/patients/patient-result?username=${username}&secret_key=${secret_key}`;
+        }, 3000);
+      } else {
+        show_alert(res["message"]);
+      }
+    });
+}
+
+function addDoctor(event, elem) {
+  event.preventDefault();
+  const body = new FormData();
+
+  Array.from(elem.querySelectorAll("input")).forEach((input) => {
+    body.append(input.name, input.value);
+  });
+  fetch("/hospital/add-doctor/", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": document
+        .querySelector("input[name=csrfmiddlewaretoken]")
+        .value.trim(),
+    },
+    body: body,
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data && data.status && data.status == 200) {
+        show_success(data.message);
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 2000);
+      } else {
+        if (data && data.message) {
+          show_alert(data.message);
+        }
+      }
+    })
+    .catch((e) => console.log(e));
 }

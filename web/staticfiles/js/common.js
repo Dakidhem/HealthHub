@@ -47,7 +47,7 @@ function show_alert(text) {
     position: "center",
     stopOnFocus: true,
     style: {
-      background: toaster_alert,
+      background: "#f98080",
       borderRadius: "5px",
       color: "#fffffe",
       boxShadow: "none",

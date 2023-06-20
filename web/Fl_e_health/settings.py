@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'main',
     'patients',
     'fl',
+    'hospital',
     'django.contrib.sites',
     'django.contrib.flatpages',
 

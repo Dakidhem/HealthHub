@@ -13,4 +13,6 @@ urlpatterns = [
     path('xray-image/edit-xray-image/<int:xray_image_id>', login_required(EditXrayImageView.as_view()), name='edit-xray-image'),
     path('my-patient/archive/',login_required(ArchiveView.as_view()),name="archive"),
     path('makePrediction/', login_required(MakePrediction.as_view()), name='delete-xray-image'),
+    path('patient-login/', PatientLoginView.as_view(), name='patient-login'),
+    path('patient-result/', PatientResultView.as_view(), name='patient-result'),
 ]
