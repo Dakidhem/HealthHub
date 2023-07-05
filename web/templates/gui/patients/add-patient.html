@@ -1,0 +1,197 @@
+{% extends 'gui/base/base.html' %} {% load static %} {% block content %}
+
+<form class="max-w-[1000px] w-full py-8" onsubmit="addPatient(this,event)">
+  <h1 class="text-3xl font-bold text-third text-center mb-8">
+    Patient information
+  </h1>
+  <div class="mb-6">
+    <label
+      for="full_name"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >Full name</label
+    >
+    <input
+      type="text"
+      id="full_name"
+      name="full_name"
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="John jones"
+      required
+    />
+  </div>
+  <div class="mb-6">
+    <label
+      for="birth_date"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >Birth Date</label
+    >
+    <input
+      type="date"
+      id="birth_date"
+      name="birth_date"
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      required
+    />
+  </div>
+  <div class="mb-6">
+    <label
+      for="phone_number"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >Phone number</label
+    >
+    <input
+      type="number"
+      id="phone_number"
+      name="phone_number"
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      required
+      placeholder="0598462531"
+    />
+  </div>
+  <div class="mb-6">
+    <label
+      for="blood_type"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >Select a blood type</label
+    >
+    <select
+      id="blood_type"
+      name="blood_type"
+      required
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    >
+      <option value="A+" selected>A+</option>
+      <option value="A-">A-</option>
+      <option value="B+">B+</option>
+      <option value="B-">B-</option>
+      <option value="AB+">AB+</option>
+      <option value="AB-">AB-</option>
+      <option value="O+">O+</option>
+      <option value="O-">O-</option>
+    </select>
+  </div>
+  <div class="mb-6">
+    <div class="flex items-center mb-4">
+      <input
+        id="gender1"
+        type="radio"
+        value="Male"
+        name="gender"
+        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+      />
+      <label
+        for="gender1"
+        class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+        >Male
+      </label>
+    </div>
+    <div class="flex items-center">
+      <input
+        checked
+        id="gender2"
+        type="radio"
+        value="Female"
+        name="gender"
+        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+      />
+      <label
+        for="gender2"
+        class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+        >Female
+      </label>
+    </div>
+  </div>
+  <div class="mb-6">
+    <label
+      for="adress"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >Address</label
+    >
+    <input
+      type="text"
+      id="adress"
+      name="adress"
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="Sidi djillali, sidi bel abbes"
+      required
+    />
+  </div>
+  <div class="mb-6">
+    <label
+      for="description"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >Description</label
+    >
+    <textarea
+      id="description"
+      rows="4"
+      name="description"
+      class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="Description..."
+      required
+    ></textarea>
+  </div>
+  <div class="mb-6">
+    <label
+      for="username"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >Username</label
+    >
+    <input
+      type="text"
+      id="username"
+      name="username"
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="John123"
+      required
+    />
+  </div>
+  <div class="mb-6">
+    <label
+      for="secret_key"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >Secret key</label
+    >
+    <input
+      type="text"
+      id="secret_key"
+      name="secret_key"
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="john john"
+      required
+    />
+  </div>
+  <div class="mb-6">
+    <label
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      for="image"
+      >Upload file</label
+    >
+    <input
+      class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+      aria-describedby="file_input_help"
+      id="image"
+      type="file"
+      accept=".png,.jpg,.jpeg"
+      required
+      name="image"
+    />
+    <p
+      class="mt-1 text-sm text-gray-500 dark:text-gray-300"
+      id="file_input_help"
+    >
+      PNG, JPG, JPEG.
+    </p>
+  </div>
+  <div class="w-full flex items-center justify-end">
+    <button
+      type="submit"
+      class="bg-primary text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+      style="background-color: #025464"
+    >
+      Add patient
+    </button>
+  </div>
+</form>
+
+{% endblock %}

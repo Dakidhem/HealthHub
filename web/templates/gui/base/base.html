@@ -1,0 +1,64 @@
+{% load static %} {% load static tailwind_tags %}
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Health Hub.</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script
+      src="https://kit.fontawesome.com/87d9c79a34.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/global.css' %}"
+    />
+    <link rel="icon" href="{% static 'images/icone.png' %}" />
+    {% tailwind_css %}
+    <script
+      src="https://kit.fontawesome.com/576ccb765a.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+  </head>
+
+  <body>
+    {% csrf_token %} {% if user.is_staff %}
+    <div class="flex justify-end items-center bg-gray-700 px-8 py-1">
+      <a
+        href="/admin"
+        class="text-white font-medium hover:text-gray-400 text-md"
+      >
+        Administration
+      </a>
+    </div>
+    {% endif %} {% include 'gui/shared/navbar.html' %}
+
+    <main
+      class="relative flex justify-center items-center {% block main_css %}py-4 px-2 sm:px-8{% endblock %} lg:min-h-screen"
+    >
+      {% block content %} {% endblock %}
+    </main>
+
+    {% include 'gui/shared/footer.html' %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+    <script src="{% static 'js/common.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+  </body>
+</html>

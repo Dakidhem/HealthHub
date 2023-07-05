@@ -1,0 +1,173 @@
+import uvicorn
+from fastapi import FastAPI, File, UploadFile , WebSocket
+import keras.utils as image
+from model import model
+from model_pneumonia import build_model
+import numpy as np
+from PIL import Image
+from io import BytesIO
+from keras.applications.imagenet_utils import decode_predictions
+from fastapi.middleware.cors import CORSMiddleware
+import flwr as fl
+import cv2
+import asyncio
+import json
+import os
+from flwr.common.parameter import parameters_to_ndarrays
+
+npz_file_path = "./pneumonia-weights.npz"
+
+pneumonia_weights=None
+# Check if the npz file exists
+if os.path.isfile(npz_file_path):
+    # Load the weights from the npz file
+    weights = np.load("pneumonia-weights.npz",allow_pickle=True)
+    weight_1d = np.atleast_1d(weights["arr_0"])[0]
+    pneumonia_weights= parameters_to_ndarrays(weight_1d)
+
+
+app = FastAPI()
+    
+def predict(image: Image.Image):
+    all_labels=['Atelectasis', 'Cardiomegaly', 'Consolidation', 'Edema', 'Effusion', 'Emphysema', 'Fibrosis', 'Hernia', 'Infiltration', 'Mass', 'Nodule', 'Pleural_Thickening', 'Pneumonia', 'Pneumothorax']
+    image = np.asarray(image.resize((224, 224)))
+    image = cv2.cvtColor(image,cv2.COLOR_GRAY2RGB)
+    image = np.expand_dims(image, 0)
+    image = image / 255
+    result = model.predict(image)
+    pred_str = [f'{n_class[:4]}:{p_score*100:.2f}%'
+        for n_class, p_score 
+        in zip(all_labels,result[0]) 
+        if (p_score>0.1)]
+    return pred_str
+
+def predict_pneumonia(image: Image.Image):
+    image = np.array(image)
+    img = cv2.resize(image, (224,224))
+
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = img.astype(np.float32)/255.
+    img = np.expand_dims(img, axis=0)
+    model=build_model()
+    model.set_weights(pneumonia_weights)
+    result = model.predict(img)
+
+    result = result.tolist()
+    result=result[0]
+    print(result[0],result[1])
+    if result[0] > result[1]:
+        response = "No Pneumonia"
+    else :
+        response = "Pneumonia"
+
+    return response
+
+def read_imagefile(file) -> Image.Image:
+    image = Image.open(BytesIO(file))
+    return image
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
+@app.post("/predict")
+async def predict_api(file: UploadFile = File(...)):
+    extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
+    if not extension:
+        
+        return str(file.filename.split(".")[-1])
+    image = read_imagefile(await file.read())
+    prediction = predict(image)
+    return prediction
+
+@app.post("/predict-pneumonia")
+async def predict_pneumonia_api(file: UploadFile = File(...)):
+    extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
+    if not extension:
+        
+        return str(file.filename.split(".")[-1])
+    image = read_imagefile(await file.read())
+    prediction = predict_pneumonia(image)
+    return prediction
+
+
+
+async def send_output(websocket,num_round,min_client):
+    process = await asyncio.create_subprocess_exec(
+        "python", "start_flower_server.py",
+        str(num_round),str(min_client),
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+
+    )
+
+    while True:
+        try:
+            stdout_data = await asyncio.wait_for(process.stdout.readline(), timeout=0.1)
+            stdout_data = stdout_data.decode().strip()
+            if stdout_data:
+                stdout_message = {"type": "info", "text": stdout_data}
+                await websocket.send_text(json.dumps(stdout_message))
+        except asyncio.TimeoutError:
+            pass
+
+        try:
+            stderr_data = await asyncio.wait_for(process.stderr.readline(), timeout=0.1)
+            stderr_data = stderr_data.decode().strip()
+            if stderr_data:
+                stderr_message = {"type": "warning", "text": stderr_data}
+                await websocket.send_text(json.dumps(stderr_message))
+        except asyncio.TimeoutError:
+            pass
+
+        if process.returncode is not None:
+            # Process has finished, break the loop
+            break
+
+    # Send a final message indicating that the process has completed
+    completion_message = {"type": "success", "text": "Process completed"}
+    await websocket.send_text(json.dumps(completion_message))
+
+    await websocket.close()
+
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    starting_message={"type":"success","text":"Starting the federated process ..."}
+    await websocket.send_text(json.dumps(starting_message))
+
+    num_round=None
+    min_client=None
+
+    async def receive_messages():
+        nonlocal num_round, min_client
+
+        while True:
+            text = await websocket.receive_text()
+            if "num_round" in text:
+                num_round = text.replace("num_round : ", "")
+            if "min_client" in text:
+                min_client = text.replace("min_client : ", "")
+
+            if num_round and min_client:
+                break
+
+    await receive_messages()
+                
+    # Start a task to send the Flower server output to the WebSocket client
+    await send_output(websocket,num_round,min_client)
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+if __name__ == "__main__":
+    uvicorn.run(app,port=7000,reload=True)

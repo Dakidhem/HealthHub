@@ -1,0 +1,156 @@
+{% extends 'gui/base/base.html' %} {% load static %} {% block content %}
+<div class="min-h-screen max-w-[1200px] w-full">
+  <div class="w-full">
+    <h1 class="text-center text-third font-bold text-2xl my-5">
+      Add xray image
+    </h1>
+    <form
+      class="grid grid-cols-2 w-full mt-16 w-full"
+      enctype="multipart/form-data"
+      onsubmit="addXrayImage(event,this,'{{patient.id}}')"
+    >
+      {% csrf_token %}
+      <div>
+        <div class="relative w-content w-[300px] w-[300px]">
+          <img
+            id="xray_image"
+            src="{% static 'images/xray_illustartion.jpg' %}"
+            alt="xray illustartion"
+            class="w-100 h-100"
+          />
+          <div
+            class="bg-dark opacity-0 cursor-pointer absolute z-20 w-full h-full top-0 left-0 hover:opacity-50 flex items-center jusfity-center"
+            onclick="document.getElementById('image').click()"
+          >
+            <i
+              class="fas fa-edit fa-2xl relative left-[45%]"
+              style="color: #aeb8fe"
+            ></i>
+          </div>
+          <input
+            class="hidden"
+            aria-describedby="file_input_help"
+            id="image"
+            type="file"
+            accept=".png,.jpg,.jpeg"
+            name="image"
+            onchange="changeImage(this)"
+          />
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <h2 class="mb-5 text-third font-bold text-xl">
+          Diagnostic informations
+        </h2>
+        <div class="mb-5">
+          <label for="algo" class="block mb-2 text-sm font-medium text-gray-900"
+            >Select an algortihm for diagnostic prediction</label
+          >
+          <!-- prettier-ignore -->
+          <select id="algo"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5  border-gray-600 placeholder-gray-400  focus:ring-blue-500 focus:border-blue-500">
+            <option value="multiclass" selected>Multiclass</option>
+            <option value="pneumonia">Pneumonia</option>
+          </select>
+        </div>
+        <div class="mb-5">
+          <label
+            for="diagnostic_input"
+            class="block mb-2 text-sm font-medium text-gray-900"
+          >
+            Diagnostic</label
+          >
+          <input
+            type="text"
+            id="diagnostic_input"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Pneumonia"
+          />
+        </div>
+        <button
+          class="mx-auto mt-5 w-full bg-primary text-white rounded py-2 font-semibold"
+          onclick="makeDiagnostic(event,this)"
+        >
+          Make ai diagnostic
+        </button>
+        <div class="w-full flex justify-center mt-16">
+          <button
+            type="submit"
+            class="mt-5 text-white rounded py-2 font-semibold px-4 w-6/12"
+            style="background-color: #026443"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  function changeImage(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      xray_data["image"] = input.files[0];
+      reader.onload = function (e) {
+        document
+          .getElementById("xray_image")
+          .setAttribute("src", e.target.result);
+      };
+
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+  function makeDiagnostic(event, elem) {
+    event.preventDefault();
+    const formdata = new FormData();
+    const selectElement = document.getElementById("algo");
+    const selectedIndex = selectElement.selectedIndex;
+    const selectedOption = selectElement.options[selectedIndex].value;
+    if (selectedOption === "multiclass") {
+      let fetch_url = "/patients/makePrediction/";
+    } else {
+      let fetch_url = "/patients/makePrediction/";
+    }
+
+    let body = {};
+
+    if (xray_data["image"]) {
+      if (selectedOption === "multiclass") {
+        formdata.append("model", "multiclass");
+      } else {
+        formdata.append("model", "pneumonia");
+      }
+      formdata.append("image", xray_data["image"]);
+      body = formdata;
+    } else {
+      return show_alert("You need to add an xray image !");
+    }
+
+    const options = {
+      method: "POST",
+      body: body,
+      headers: {
+        "X-CSRFToken": document
+          .querySelector("input[name=csrfmiddlewaretoken]")
+          .value.trim(),
+      },
+      // If you add this, upload won't work
+      // headers: {
+      //   'Content-Type': 'multipart/form-data',
+      // }
+    };
+
+    fetch("/patients/makePrediction/", options)
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        document.getElementById("diagnostic_input").value = res.data;
+        show_info("AI Diagnostic done !");
+      })
+      .catch((err) => {
+        console.log(res.json());
+      });
+  }
+</script>
+{% endblock %}

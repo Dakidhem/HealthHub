@@ -1,0 +1,70 @@
+{% extends 'gui/base/base.html' %} {% load static tailwind_tags %} {% load
+i18n%} {% block content %}
+<div class="relative max-w-[1440px] w-full lg:min-h-screen-admin">
+  <h1 class="text-3xl text-third font-bold text-center">Fl results</h1>
+
+  <p class="mb-4 text-third my-16">
+    Federated Learning Results: Our federated learning process utilizes the
+    collaborative efforts of hospitals and doctors to train a global model for
+    medical health and X-ray image analysis. Through this approach, we have
+    achieved remarkable results. During the training phase, each participating
+    hospital or doctor trains a local model on their own patient data while
+    keeping the data securely on their premises. The local models are then
+    aggregated to create the global model, benefiting from the collective
+    knowledge of all participants. We have observed impressive training
+    accuracy, with the global model achieving an average accuracy of over 90%.
+    The testing accuracy has demonstrated excellent performance, consistently
+    achieving accuracy rates above 70% in the 3rd round. Additionally, we have
+    monitored the loss reduction throughout the training iterations, observing a
+    significant decrease in the loss function. These exceptional results reflect
+    the power of federated learning in harnessing the collective intelligence of
+    healthcare professionals while preserving data privacy and security. Our
+    approach enables hospitals and doctors to leverage a shared global model
+    that continually learns and improves, leading to enhanced diagnostic
+    accuracy and better patient outcomes.
+  </p>
+
+  {% if all_results %}
+  <table
+    class="w-full text-sm text-left text-gray-500 overflow-x-auto shadow-md sm:rounded-lg"
+  >
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+      <tr>
+        <th scope="col" class="px-6 py-3">Date</th>
+        <th scope="col" class="px-6 py-3">Min number of clients</th>
+        <th scope="col" class="px-6 py-3">Number of rounds</th>
+        <th scope="col" class="px-6 py-3">Durations</th>
+        <th scope="col" class="px-6 py-3">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for result in all_results %}
+      <tr
+        class="patient-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+      >
+        <td class="px-6 py-4">{{result.result.date}}</td>
+        <td class="px-6 py-4">{{result.result.min_client}}</td>
+        <td class="px-6 py-4">{{result.result.num_round}}</td>
+        <td class="px-6 py-4">{{result.duration}}</td>
+        <td class="px-6 py-4">
+          <a
+            href="{% url 'fl:result' result.result.id %}"
+            class="font-medium text-primary hover:underline"
+            >Check result</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div
+    class="flex items-center jusfity-center bg-gray-100 text-center py-4 px-4 rounded-lg"
+  >
+    <p class="w-full text-center font-semibold text-third">
+      There is no results to be shown
+    </p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

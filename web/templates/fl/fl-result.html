@@ -1,0 +1,202 @@
+{% extends 'gui/base/base.html' %} {% load static tailwind_tags %} {% load
+i18n%} {% block content %}
+<div class="relative max-w-[1440px] w-full lg:min-h-screen-admin">
+  <h1 class="text-3xl text-third font-bold text-center">
+    Federated learning result : {{result.date}}
+  </h1>
+  <p class="mt-16 text-third text-center">
+    Here is a table that summarize the results from the federated learning
+    process
+  </p>
+  {% if rounds %}
+  <table
+    class="w-full text-sm text-left text-gray-500 overflow-x-auto shadow-md sm:rounded-lg mt-8"
+  >
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+      <tr>
+        <th scope="col" class="px-6 py-3">Round</th>
+        <th scope="col" class="px-6 py-3">Duration</th>
+        <th scope="col" class="px-6 py-3">Losses</th>
+        <th scope="col" class="px-6 py-3">Training accuracy</th>
+        <th scope="col" class="px-6 py-3">Evaluation accuracy</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for round in rounds %}
+      <tr
+        class="patient-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+      >
+        <td
+          scope="row"
+          class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
+        >
+          <div class="text-base font-semibold" id="full_name">
+            {{round.round}}
+          </div>
+        </td>
+        <td class="px-6 py-4">{{duration_devided}} seconds</td>
+        <td class="px-6 py-4">{{round.losses}}</td>
+        <td class="px-6 py-4">{{round.training_accuracy}}</td>
+        <td class="px-6 py-4">{{round.evaluation_accuracy}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="mt-16">
+    <h2 class="text-3xl text-third font-bold">Duration</h2>
+    <p class="text-third text-xl mt-16">
+      <i class="fa-regular fa-clock fa-xl" style="color: #025464"></i>
+      The federated learning process took
+      <span class="font-bold">{{duration}} seconds</span>
+    </p>
+  </div>
+
+  {% else %}
+  <div
+    class="flex items-center jusfity-center bg-gray-100 text-center py-4 px-4 rounded-lg"
+  >
+    <p class="w-full text-center font-semibold text-third">
+      There is no results to be shown
+    </p>
+  </div>
+  {% endif %}
+  <h2 class="text-3xl text-third font-bold mt-16">Charts</h2>
+  {% if rounds %}
+  <!-- Graph for Losses -->
+  <div class="max-w-[50%] mx-auto">
+    <!-- Graph for Training Accuracy -->
+    <div class="mt-16">
+      <h2 class="text-2xl text-third font-semibold mb-4">Training Accuracy</h2>
+      <p class="mb-8 text-third">
+        Training accuracy measures how well a machine learning model predicts
+        the labels of the training data. It shows the model's ability to
+        correctly classify examples it has already seen.
+      </p>
+      <canvas id="trainingAccuracyChart"></canvas>
+    </div>
+
+    <!-- Graph for Evaluation Accuracy -->
+    <div class="mt-16">
+      <h2 class="text-2xl text-third font-semibold mb-4">
+        Evaluation Accuracy
+      </h2>
+      <p class="mb-8 text-third">
+        Test accuracy refers to the performance of a machine learning model on a
+        separate dataset, called the test set, that is not used during the
+        model's training phase. It measures the accuracy or correctness of the
+        model's predictions on unseen data. Test accuracy provides an estimate
+        of how well the model generalizes to new, unseen examples and is an
+        important metric for evaluating the overall performance and
+        effectiveness of the trained model.
+      </p>
+      <canvas id="evaluationAccuracyChart"></canvas>
+    </div>
+    <div class="mt-16">
+      <h2 class="text-2xl text-third font-semibold mb-4">Losses</h2>
+      <p class="mb-8 text-third">
+        Loss refers to a numerical value that represents the error or
+        discrepancy between the predicted output of a machine learning model and
+        the actual ground truth. It quantifies how well the model is performing
+        during the training process, with the goal of minimizing the loss over
+        time. In simpler terms, loss indicates how far off the model's
+        predictions are from the desired outcomes.
+      </p>
+      <canvas id="lossesChart"></canvas>
+    </div>
+    {% else %}
+    <div
+      class="flex items-center justify-center bg-gray-100 text-center py-4 px-4 rounded-lg"
+    >
+      <p class="w-full text-center font-semibold text-third">
+        There are no results to be shown
+      </p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+<!-- Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Custom JavaScript code -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get the data from the server
+    var rounds = {{ rounds|safe }};  // Ensure the data is safe for rendering
+
+    // Extract the metrics for each round
+    var losses = rounds.map(function(round) {
+      return round.losses;
+    });
+
+    var trainingAccuracy = rounds.map(function(round) {
+      return round.training_accuracy;
+    });
+
+    var evaluationAccuracy = rounds.map(function(round) {
+      return round.evaluation_accuracy;
+    });
+
+    // Chart.js configuration
+    var ctxLosses = document.getElementById('lossesChart').getContext('2d');
+    var lossesChart = new Chart(ctxLosses, {
+      type: 'line',
+      data: {
+        labels: rounds.map(function(round) {
+          return round.round;
+        }),
+        datasets: [{
+          label: 'Losses',
+          data: losses,
+          borderColor: 'rgba(255, 99, 132, 1)',
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+
+          fill: true
+        }]
+      },
+      options: {
+        // Configure the chart options as desired
+      }
+    });
+
+    var ctxTrainingAccuracy = document.getElementById('trainingAccuracyChart').getContext('2d');
+    var trainingAccuracyChart = new Chart(ctxTrainingAccuracy, {
+      type: 'line',
+      data: {
+        labels: rounds.map(function(round) {
+          return round.round;
+        }),
+        datasets: [{
+          label: 'Training Accuracy',
+          data: trainingAccuracy,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          fill: true
+        }]
+      },
+      options: {
+        // Configure the chart options as desired
+      }
+    });
+
+    var ctxEvaluationAccuracy = document.getElementById('evaluationAccuracyChart').getContext('2d');
+    var evaluationAccuracyChart = new Chart(ctxEvaluationAccuracy, {
+      type: 'line',
+      data: {
+        labels: rounds.map(function(round) {
+          return round.round;
+        }),
+        datasets: [{
+          label: 'Test Accuracy',
+          data: evaluationAccuracy,
+          borderColor: 'rgba(54, 162, 235, 1)',
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          fill: true
+        }]
+      },
+      options: {
+        // Configure the chart options as desired
+      }
+    });
+  });
+</script>
+{% endblock %}

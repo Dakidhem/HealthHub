@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:latest
+    container_name: db
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: my_database
+    volumes:
+      - ./hubdb:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "db"]
+      timeout: 20s
+      retries: 10
+
+  web_app:
+    build: ./web
+    container_name: web_app
+    restart: on-failure
+    ports:
+      - 8000:8000
+    volumes:
+      - ./web:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  api:
+    build: ./api
+    container_name: api
+    restart: on-failure
+    ports:
+      - 7000:7000
+      - 8080:8080
+    volumes:
+      - ./api:/api
+    depends_on:
+      db:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

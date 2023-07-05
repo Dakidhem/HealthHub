@@ -1,0 +1,6 @@
+hubdblocal 
+hubdb
+.npz
+.vscode
+.web
+*.h5
